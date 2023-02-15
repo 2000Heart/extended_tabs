@@ -414,6 +414,10 @@ class _TabStyle extends AnimatedWidget {
     final Color? color = selected!
         ? Color.lerp(selectedColor, unselectedColor, animation.value)
         : Color.lerp(unselectedColor, selectedColor, animation.value);
+    final double multiple = (labelStyle?.fontSize ?? 0) / (unselectedLabelStyle?.fontSize ?? 0);
+    final double? _scale = selected == true
+        ? lerpDouble(multiple, 1, animation.value)
+        : lerpDouble(1, multiple, animation.value);
 
     return DefaultTextStyle(
       style: textStyle.copyWith(color: color),
@@ -422,7 +426,9 @@ class _TabStyle extends AnimatedWidget {
           size: 24.0,
           color: color,
         ),
-        child: child,
+        child: Transform.scale(
+          scale: _scale,
+          child: child),
       ),
     );
   }
