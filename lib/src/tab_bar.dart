@@ -415,7 +415,7 @@ class _TabStyle extends AnimatedWidget {
         ? Color.lerp(selectedColor, unselectedColor, animation.value)
         : Color.lerp(unselectedColor, selectedColor, animation.value);
     final double multiple = (labelStyle?.fontSize ?? 1) / (unselectedLabelStyle?.fontSize ?? 1);
-    final double? _scale = selected == true && multiple != 1
+    final double? _scale = selected!
         ? lerpDouble(multiple, 1, animation.value)
         : lerpDouble(1, multiple, animation.value);
 
