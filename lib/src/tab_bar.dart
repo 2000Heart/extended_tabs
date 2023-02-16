@@ -434,17 +434,21 @@ class _TabStyle extends AnimatedWidget {
           size: 24.0,
           color: color,
         ),
-        child: Transform(
-            transform: Matrix4.diagonal3(
-              Vector3.all(
-                Tween<double>(
-                  end: endPercent,
-                  begin: beginPercent,
-                ).evaluate(animation),
-              ),
-            ),
-          alignment: Alignment.center,
-          child: child),
+        child: Transform.scale(
+          scale: _scale,
+          child: child,
+        )
+        // Transform(
+        //     transform: Matrix4.diagonal3(
+        //       Vector3.all(
+        //         Tween<double>(
+        //           end: endPercent,
+        //           begin: beginPercent,
+        //         ).evaluate(animation),
+        //       ),
+        //     ),
+        //   alignment: Alignment.center,
+        //   child: child),
       ),
     );
   }
@@ -1266,18 +1270,18 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
       );
     });
 
-    for (int i = 0; i < widget.tabs.length; i += 1) {
-      if (isOnlyTabText) {
-        _textPainters![i].layout();
-        print("_textPainters[${i}].width  = ${_textPainters?[i].width }" );
-        wrappedTabs[i] = Container(
-            width: _textPainters![i].width + (
-                widget.labelPadding ??
-                tabBarTheme.labelPadding ??
-                kTabLabelPadding).horizontal,
-            child: wrappedTabs[i]);
-      }
-    }
+    // for (int i = 0; i < widget.tabs.length; i += 1) {
+    //   if (isOnlyTabText) {
+    //     _textPainters![i].layout();
+    //     print("_textPainters[${i}].width  = ${_textPainters?[i].width }" );
+    //     wrappedTabs[i] = Container(
+    //         width: _textPainters![i].width + (
+    //             widget.labelPadding ??
+    //             tabBarTheme.labelPadding ??
+    //             kTabLabelPadding).horizontal,
+    //         child: wrappedTabs[i]);
+    //   }
+    // }
 
     // If the controller was provided by DefaultTabController and we're part
     // of a Hero (typically the AppBar), then we will not be able to find the
