@@ -414,11 +414,11 @@ class _TabStyle extends AnimatedWidget {
     final Color? color = selected!
         ? Color.lerp(selectedColor, unselectedColor, animation.value)
         : Color.lerp(unselectedColor, selectedColor, animation.value);
-    final double beginPercent = (textStyle.fontSize ?? defaultStyle.fontSize)! /
-        (selected! ? defaultStyle.fontSize : defaultUnselectedStyle.fontSize)!;
+    final double beginPercent = ((textStyle.fontSize ?? defaultStyle.fontSize) ?? 1) /
+        ((selected! ? defaultStyle.fontSize : defaultUnselectedStyle.fontSize) ?? 1);
     final double endPercent =
-        (selected! ? defaultUnselectedStyle.fontSize : defaultStyle.fontSize)! /
-            (textStyle.fontSize ?? defaultStyle.fontSize)!;
+        ((selected! ? defaultUnselectedStyle.fontSize : defaultStyle.fontSize) ?? 1) /
+            ((textStyle.fontSize ?? defaultStyle.fontSize) ?? 1);
 
     return DefaultTextStyle(
       style: textStyle.copyWith(color: color),
@@ -916,6 +916,7 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
     // If indicatorSize is TabIndicatorSize.label, _tabKeys[i] is used to find
     // the width of tab widget i. See _IndicatorPainter.indicatorRect().
     _tabKeys = widget.tabs.map((Widget tab) => GlobalKey()).toList();
+    _initTextPainterList();
   }
   void _initTextPainterList() {
     final bool isOnlyTabText = widget.tabs
@@ -1044,6 +1045,7 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
     assert(debugCheckHasMaterial(context));
     _updateTabController();
     _initIndicatorPainter();
+    _initTextPainterList();
   }
 
   @override
@@ -1052,12 +1054,14 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
     if (widget.controller != oldWidget.controller) {
       _updateTabController();
       _initIndicatorPainter();
+      _initTextPainterList();
     } else if (widget.indicatorColor != oldWidget.indicatorColor ||
         widget.indicatorWeight != oldWidget.indicatorWeight ||
         widget.indicatorSize != oldWidget.indicatorSize ||
         widget.indicator != oldWidget.indicator ||
         widget.mainAxisAlignment != oldWidget.mainAxisAlignment) {
       _initIndicatorPainter();
+      _initTextPainterList();
     }
 
     if (widget.tabs.length > oldWidget.tabs.length) {
