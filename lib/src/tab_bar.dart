@@ -419,9 +419,16 @@ class _TabStyle extends AnimatedWidget {
     final double endPercent =
         ((selected! ? defaultUnselectedStyle.fontSize : defaultStyle.fontSize) ?? 1) /
             ((textStyle.fontSize ?? defaultStyle.fontSize) ?? 1);
-
+    final double _magnification =
+        labelStyle?.fontSize ?? 1 / (unselectedLabelStyle?.fontSize ?? 1);
+    final double? _scale = selected!
+        ? lerpDouble(_magnification, 1, animation.value)
+        : lerpDouble(1, _magnification, animation.value);
     return DefaultTextStyle(
-      style: textStyle.copyWith(color: color),
+      style: textStyle.copyWith(
+        color: color,
+        fontSize: unselectedLabelStyle?.fontSize
+      ),
       child: IconTheme.merge(
         data: IconThemeData(
           size: 24.0,
