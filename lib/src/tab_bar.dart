@@ -908,6 +908,7 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
   int? _currentIndex;
   late double _tabStripWidth;
   late List<GlobalKey> _tabKeys;
+  List<TextPainter>? _textPainters;
 
   @override
   void initState() {
@@ -915,6 +916,35 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
     // If indicatorSize is TabIndicatorSize.label, _tabKeys[i] is used to find
     // the width of tab widget i. See _IndicatorPainter.indicatorRect().
     _tabKeys = widget.tabs.map((Widget tab) => GlobalKey()).toList();
+  }
+  void _initTextPainterList() {
+    final bool isOnlyTabText = widget.tabs
+        .map<bool>((Widget tab) =>
+    tab is ExtendedTab && tab.icon == null && tab.child == null)
+        .toList()
+        .reduce((bool value, bool element) => value && element);
+    if (isOnlyTabText) {
+      final TextStyle defalutLabelStyle =
+          (widget.labelStyle ?? Theme.of(context).primaryTextTheme.bodyMedium)!;
+      final TextStyle defalutUnselectedLabelStyle =
+          (widget.unselectedLabelStyle ??
+              Theme.of(context).primaryTextTheme.bodyMedium)!;
+      final TextStyle defalutStyle =
+      defalutLabelStyle.fontSize! >= defalutUnselectedLabelStyle.fontSize!
+          ? defalutLabelStyle
+          : defalutUnselectedLabelStyle;
+
+      _textPainters = widget.tabs.map<TextPainter>((Widget tab) {
+        return TextPainter(
+          textDirection: TextDirection.ltr,
+          text: TextSpan(
+            text: tab is ExtendedTab ? tab.text ?? '' : '',
+            style: defalutStyle,
+          ),
+        );
+      }).toList();
+    } else
+      _textPainters = null;
   }
 
   Decoration get _indicator {
@@ -1189,7 +1219,7 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
     }
 
     final TabBarTheme tabBarTheme = TabBarTheme.of(context);
-
+    final bool isOnlyTabText = _textPainters != null;
     final List<Widget> wrappedTabs =
         List<Widget>.generate(widget.tabs.length, (int index) {
       const double verticalAdjustment =
@@ -1210,7 +1240,6 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
           }
         }
       }
-
       return Center(
         heightFactor: 1.0,
         child: Padding(
@@ -1225,6 +1254,19 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
         ),
       );
     });
+
+    for (int i = 0; i < widget.tabs.length; i += 1) {
+      if (isOnlyTabText) {
+        _textPainters?[i].layout();
+        print("_textPainters[${i}].width  = ${_textPainters?[i].width }" );
+        wrappedTabs[i] = Container(
+            width: _textPainters?[i].width ?? 0 + (
+                widget.labelPadding ??
+                tabBarTheme.labelPadding ??
+                kTabLabelPadding).horizontal,
+            child: wrappedTabs[i]);
+      }
+    }
 
     // If the controller was provided by DefaultTabController and we're part
     // of a Hero (typically the AppBar), then we will not be able to find the
