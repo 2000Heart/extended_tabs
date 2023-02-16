@@ -420,7 +420,7 @@ class _TabStyle extends AnimatedWidget {
         ((selected! ? defaultUnselectedStyle.fontSize : defaultStyle.fontSize) ?? 1) /
             ((textStyle.fontSize ?? defaultStyle.fontSize) ?? 1);
     final double _magnification =
-        labelStyle?.fontSize ?? 1 / (unselectedLabelStyle?.fontSize ?? 1);
+        (labelStyle?.fontSize ?? 1) / (unselectedLabelStyle?.fontSize ?? 1);
     final double? _scale = selected!
         ? lerpDouble(_magnification, 1, animation.value)
         : lerpDouble(1, _magnification, animation.value);

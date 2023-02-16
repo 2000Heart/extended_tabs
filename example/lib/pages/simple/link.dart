@@ -45,13 +45,15 @@ class _LinkDemoState extends State<LinkDemo> with TickerProviderStateMixin {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          TabBar(
+          ExtendedTabBar(
             indicator: const ColorTabIndicator(Colors.blue),
             labelColor: Colors.black,
-            tabs: const <Tab>[
-              Tab(text: 'Tab0'),
-              Tab(text: 'Tab1'),
+            tabs: [
+              ExtendedTab(text: '什么'),
+              ExtendedTab(text: '顺顺'),
             ],
+            labelStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),
+            unselectedLabelStyle: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
             controller: tabController,
           ),
           Expanded(
