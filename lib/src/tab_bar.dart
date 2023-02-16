@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'tab_indicator.dart';
 
 const double _kTabHeight = 46.0;
@@ -414,10 +414,11 @@ class _TabStyle extends AnimatedWidget {
     final Color? color = selected!
         ? Color.lerp(selectedColor, unselectedColor, animation.value)
         : Color.lerp(unselectedColor, selectedColor, animation.value);
-    final double multiple = (labelStyle?.fontSize ?? 1) / (unselectedLabelStyle?.fontSize ?? 1);
-    final double? _scale = selected!
-        ? lerpDouble(multiple, 1, animation.value)
-        : lerpDouble(1, multiple, animation.value);
+    final double beginPercent = (textStyle.fontSize ?? defaultStyle.fontSize)! /
+        (selected! ? defaultStyle.fontSize : defaultUnselectedStyle.fontSize)!;
+    final double endPercent =
+        (selected! ? defaultUnselectedStyle.fontSize : defaultStyle.fontSize)! /
+            (textStyle.fontSize ?? defaultStyle.fontSize)!;
 
     return DefaultTextStyle(
       style: textStyle.copyWith(color: color),
@@ -426,8 +427,16 @@ class _TabStyle extends AnimatedWidget {
           size: 24.0,
           color: color,
         ),
-        child: Transform.scale(
-          scale: _scale,
+        child: Transform(
+            transform: Matrix4.diagonal3(
+              Vector3.all(
+                Tween<double>(
+                  end: endPercent,
+                  begin: beginPercent,
+                ).evaluate(animation),
+              ),
+            ),
+          alignment: Alignment.center,
           child: child),
       ),
     );
