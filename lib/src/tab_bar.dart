@@ -1261,10 +1261,10 @@ class _ExtendedTabBarState extends State<ExtendedTabBar> {
 
     for (int i = 0; i < widget.tabs.length; i += 1) {
       if (isOnlyTabText) {
-        _textPainters?[i].layout();
+        _textPainters![i].layout();
         print("_textPainters[${i}].width  = ${_textPainters?[i].width }" );
         wrappedTabs[i] = Container(
-            width: _textPainters?[i].width ?? 0 + (
+            width: _textPainters![i].width + (
                 widget.labelPadding ??
                 tabBarTheme.labelPadding ??
                 kTabLabelPadding).horizontal,
